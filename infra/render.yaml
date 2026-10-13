@@ -83,7 +83,7 @@ services:
   - type: web
     name: clerk-web
     runtime: static
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @clerk/web build
+    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile && pnpm --filter @clerk/web build
     staticPublishPath: ./packages/web/dist
     routes:
       - type: rewrite
