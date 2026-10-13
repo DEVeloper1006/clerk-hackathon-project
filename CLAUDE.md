@@ -74,6 +74,13 @@ Agents communicate via Redis pub/sub event bus (`packages/api/src/events/bus.ts`
 | Render | `infra/render.yaml` | Blueprint deployment |
 | Zapier | webhook triggers | Slack alerts, email receipts, CRM syncs |
 
+## Branching & PRs
+- **`main` is protected.** No direct pushes. All changes go through pull requests.
+- **Ruleset:** Require PR before merging, 1 approval required, block force pushes.
+- **Branch naming:** `dev/<author>/<ticket-or-slug>` (e.g. `dev/dev/dashboard-grid`, `dev/friend/paypal-oauth`).
+- **Merge strategy:** Squash merge into `main`.
+- **One feature per PR.** PR description references the relevant agent or module.
+
 ## Conventions
 - TypeScript strict mode everywhere.
 - Fastify route files: `*.routes.ts`. Service files: `*.service.ts`. Type files: `*.types.ts`.
@@ -81,7 +88,6 @@ Agents communicate via Redis pub/sub event bus (`packages/api/src/events/bus.ts`
 - Environment variables in `.env` (gitignored). Schema in `packages/api/src/config/env.ts`.
 - Every agent action logged to Elasticsearch and emitted via Socket.IO.
 - Commits: conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `chore:`).
-- PRs: one feature per PR, description references the relevant agent or module.
 
 ## Environment Variables
 ```
