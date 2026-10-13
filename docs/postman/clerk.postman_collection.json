@@ -1,0 +1,505 @@
+{
+  "info": {
+    "name": "Clerk API",
+    "description": "Clerk \u2014 AI-native business infrastructure on PayPal. Set `token` after logging in.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "tenantId",
+      "value": ""
+    },
+    {
+      "key": "agentId",
+      "value": ""
+    },
+    {
+      "key": "ruleId",
+      "value": ""
+    },
+    {
+      "key": "transactionId",
+      "value": ""
+    },
+    {
+      "key": "paypalCode",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"password123\",\n  \"businessName\": \"Demo Coffee Roasters\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tenants",
+      "item": [
+        {
+          "name": "Get my tenant",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tenants/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tenants", "me"]
+            }
+          }
+        },
+        {
+          "name": "Create tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tenants",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tenants"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Coffee Roasters\",\n  \"industry\": \"ecommerce\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update my tenant",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tenants/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tenants", "me"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Coffee Co.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete my tenant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tenants/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tenants", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PayPal",
+      "item": [
+        {
+          "name": "Get connect URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/paypal/connect",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "paypal", "connect"]
+            }
+          }
+        },
+        {
+          "name": "OAuth callback",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/paypal/callback?code={{paypalCode}}&state={{tenantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "paypal", "callback"],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "{{paypalCode}}"
+                },
+                {
+                  "key": "state",
+                  "value": "{{tenantId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Webhook (sample)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/paypal/webhooks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "paypal", "webhooks"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"WH-DEMO\",\n  \"event_type\": \"PAYMENT.CAPTURE.COMPLETED\",\n  \"resource\": {}\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agents",
+      "item": [
+        {
+          "name": "List agents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agents",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agents"]
+            }
+          }
+        },
+        {
+          "name": "Create agent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agents",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agents"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"sentinel\",\n  \"enabled\": true,\n  \"config\": {}\n}"
+            }
+          }
+        },
+        {
+          "name": "Get agent",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agents/{{agentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agents", "{{agentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update agent",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agents/{{agentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agents", "{{agentId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete agent",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agents/{{agentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agents", "{{agentId}}"]
+            }
+          }
+        },
+        {
+          "name": "Start agent",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agents/{{agentId}}/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agents", "{{agentId}}", "start"]
+            }
+          }
+        },
+        {
+          "name": "Stop agent",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agents/{{agentId}}/stop",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agents", "{{agentId}}", "stop"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rules",
+      "item": [
+        {
+          "name": "List rules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/rules",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rules"]
+            }
+          }
+        },
+        {
+          "name": "Create rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/rules",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rules"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agentType\": \"sentinel\",\n  \"naturalLanguage\": \"Flag any order over $500 from a new customer\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update rule",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/rules/{{ruleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rules", "{{ruleId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete rule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/rules/{{ruleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "rules", "{{ruleId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "List transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions?limit=50&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get transaction",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/{{transactionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions", "{{transactionId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Templates",
+      "item": [
+        {
+          "name": "List templates",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/templates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "templates"]
+            }
+          }
+        },
+        {
+          "name": "Apply template",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/templates/ecommerce/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "templates", "ecommerce", "apply"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

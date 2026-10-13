@@ -1,0 +1,21 @@
+{
+  "industry": "ecommerce",
+  "name": "E-commerce",
+  "description": "Online stores with high order volume, refunds, and disputes.",
+  "agents": [
+    { "type": "sentinel", "enabled": true, "config": {} },
+    { "type": "treasury", "enabled": true, "config": {} },
+    { "type": "commerce", "enabled": true, "config": {} },
+    { "type": "growth", "enabled": true, "config": {} }
+  ],
+  "rules": [
+    {
+      "agentType": "sentinel",
+      "naturalLanguage": "Hold orders over $500 shipping to a different country than the billing address."
+    },
+    {
+      "agentType": "commerce",
+      "naturalLanguage": "Auto-approve refunds under $25 for customers with no prior disputes."
+    }
+  ]
+}

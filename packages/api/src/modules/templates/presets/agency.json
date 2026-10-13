@@ -1,0 +1,21 @@
+{
+  "industry": "agency",
+  "name": "Agency",
+  "description": "Service businesses with retainers, subscriptions, and contractor payouts.",
+  "agents": [
+    { "type": "sentinel", "enabled": true, "config": {} },
+    { "type": "treasury", "enabled": true, "config": {} },
+    { "type": "commerce", "enabled": true, "config": {} },
+    { "type": "growth", "enabled": false, "config": {} }
+  ],
+  "rules": [
+    {
+      "agentType": "treasury",
+      "naturalLanguage": "Schedule contractor payouts only after the matching client payment clears."
+    },
+    {
+      "agentType": "commerce",
+      "naturalLanguage": "Alert me in Slack when any subscription payment fails twice."
+    }
+  ]
+}

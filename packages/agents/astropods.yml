@@ -1,0 +1,49 @@
+# Astropods deployment spec — one pod per agent, all built from the same worker image.
+# Each pod runs `node dist/index.js` with AGENTS set to the single agent it owns.
+version: 1
+project: clerk-agents
+
+defaults:
+  build:
+    dockerfile: infra/docker/agents.Dockerfile
+    context: .
+  runtime:
+    command: ['node', 'packages/agents/dist/index.js']
+    restart: always
+  resources:
+    cpu: 250m
+    memory: 512Mi
+  env:
+    - DATABASE_URL
+    - REDIS_URL
+    - ELASTICSEARCH_URL
+    - OPENAI_API_KEY
+    - LLM_PROVIDER
+  monitoring:
+    healthcheck:
+      type: process
+    logs: stdout
+    metrics:
+      - agent_events_processed_total
+      - agent_actions_total
+      - agent_errors_total
+
+agents:
+  - name: sentinel
+    description: Fraud detection, transaction risk scoring, anomaly detection
+    env:
+      AGENTS: sentinel
+  - name: treasury
+    description: Cash flow forecasting and payment scheduling
+    env:
+      AGENTS: treasury
+  - name: commerce
+    description: Refund handling and dispute resolution
+    env:
+      AGENTS: commerce
+  - name: growth
+    description: Revenue patterns, product intelligence (Channel3), supplier discovery
+    env:
+      AGENTS: growth
+      CHANNEL3_API_KEY: ${CHANNEL3_API_KEY}
+      KERNEL_API_KEY: ${KERNEL_API_KEY}

@@ -1,0 +1,478 @@
+openapi: 3.1.0
+info:
+  title: Clerk API
+  version: 0.1.0
+  description: >
+    AI-native business infrastructure for small businesses on PayPal.
+    Every response uses the envelope `{ success, data?, error? }`.
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: http://localhost:3001
+    description: Local
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Tenants
+  - name: PayPal
+  - name: Agents
+  - name: Rules
+  - name: Transactions
+  - name: Templates
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      security: []
+      summary: Liveness check
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/auth/register:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Register a business and its first user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Token' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Log in and receive a JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Token' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /api/tenants:
+    post:
+      tags: [Tenants]
+      summary: Create a tenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TenantInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Tenant' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /api/tenants/me:
+    get:
+      tags: [Tenants]
+      summary: Get the caller's tenant
+      responses:
+        '200': { $ref: '#/components/responses/Tenant' }
+        '401': { $ref: '#/components/responses/Error' }
+    patch:
+      tags: [Tenants]
+      summary: Update the caller's tenant
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TenantInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Tenant' }
+    delete:
+      tags: [Tenants]
+      summary: Delete the caller's tenant
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/paypal/connect:
+    get:
+      tags: [PayPal]
+      summary: Get the PayPal OAuth connect URL
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/paypal/callback:
+    get:
+      tags: [PayPal]
+      security: []
+      summary: PayPal OAuth redirect target
+      parameters:
+        - { name: code, in: query, required: true, schema: { type: string } }
+        - { name: state, in: query, required: true, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/Error' }
+
+  /api/paypal/webhooks:
+    post:
+      tags: [PayPal]
+      security: []
+      summary: PayPal webhook receiver
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PayPalWebhookEvent' }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '401': { $ref: '#/components/responses/Error' }
+
+  /api/agents:
+    get:
+      tags: [Agents]
+      summary: List the tenant's agents
+      responses:
+        '200': { $ref: '#/components/responses/AgentList' }
+    post:
+      tags: [Agents]
+      summary: Create an agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AgentInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Agent' }
+
+  /api/agents/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Agents]
+      summary: Get an agent
+      responses:
+        '200': { $ref: '#/components/responses/Agent' }
+    patch:
+      tags: [Agents]
+      summary: Update an agent
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AgentInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Agent' }
+    delete:
+      tags: [Agents]
+      summary: Delete an agent
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/agents/{id}/start:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags: [Agents]
+      summary: Start an agent
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/agents/{id}/stop:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags: [Agents]
+      summary: Stop an agent
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/rules:
+    get:
+      tags: [Rules]
+      summary: List the tenant's rules
+      responses:
+        '200': { $ref: '#/components/responses/RuleList' }
+    post:
+      tags: [Rules]
+      summary: Create a rule from plain English
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RuleInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Rule' }
+
+  /api/rules/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    patch:
+      tags: [Rules]
+      summary: Update a rule
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RuleInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Rule' }
+    delete:
+      tags: [Rules]
+      summary: Delete a rule
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/transactions:
+    get:
+      tags: [Transactions]
+      summary: List or search transactions
+      parameters:
+        - { name: q, in: query, schema: { type: string } }
+        - {
+            name: limit,
+            in: query,
+            schema: { type: integer, minimum: 1, maximum: 500, default: 50 },
+          }
+        - { name: offset, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+      responses:
+        '200': { $ref: '#/components/responses/TransactionList' }
+
+  /api/transactions/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Transactions]
+      summary: Get a transaction
+      responses:
+        '200': { $ref: '#/components/responses/Transaction' }
+
+  /api/templates:
+    get:
+      tags: [Templates]
+      summary: List industry templates
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+
+  /api/templates/{name}/apply:
+    post:
+      tags: [Templates]
+      summary: Apply an industry template to the tenant
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema: { type: string, enum: [freelancer, ecommerce, agency] }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '404': { $ref: '#/components/responses/Error' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+
+  schemas:
+    ApiResponse:
+      type: object
+      required: [success]
+      properties:
+        success: { type: boolean }
+        data: {}
+        error: { type: string }
+
+    AgentType:
+      type: string
+      enum: [sentinel, treasury, commerce, growth]
+
+    Industry:
+      type: string
+      enum: [freelancer, ecommerce, agency, other]
+
+    Tenant:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        paypalConnected: { type: boolean }
+        industry: { $ref: '#/components/schemas/Industry' }
+        createdAt: { type: string, format: date-time }
+
+    TenantInput:
+      type: object
+      required: [name, industry]
+      properties:
+        name: { type: string }
+        industry: { $ref: '#/components/schemas/Industry' }
+
+    Agent:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        tenantId: { type: string, format: uuid }
+        type: { $ref: '#/components/schemas/AgentType' }
+        enabled: { type: boolean }
+        config: { type: object, additionalProperties: true }
+        createdAt: { type: string, format: date-time }
+
+    AgentInput:
+      type: object
+      required: [type]
+      properties:
+        type: { $ref: '#/components/schemas/AgentType' }
+        enabled: { type: boolean }
+        config: { type: object, additionalProperties: true }
+
+    Rule:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        tenantId: { type: string, format: uuid }
+        agentType: { $ref: '#/components/schemas/AgentType' }
+        naturalLanguage: { type: string }
+        compiledPolicy: { type: [object, 'null'] }
+        enabled: { type: boolean }
+        createdAt: { type: string, format: date-time }
+
+    RuleInput:
+      type: object
+      required: [agentType, naturalLanguage]
+      properties:
+        agentType: { $ref: '#/components/schemas/AgentType' }
+        naturalLanguage: { type: string, example: Flag any order over $500 from a new customer }
+        enabled: { type: boolean }
+
+    Transaction:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        tenantId: { type: string, format: uuid }
+        paypalOrderId: { type: string }
+        amount: { type: number }
+        currency: { type: string, example: USD }
+        status:
+          type: string
+          enum: [created, approved, completed, refunded, disputed, flagged, failed]
+        riskScore: { type: [integer, 'null'], minimum: 0, maximum: 100 }
+        createdAt: { type: string, format: date-time }
+
+    RegisterInput:
+      type: object
+      required: [email, password, businessName]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+        businessName: { type: string }
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+
+    PayPalWebhookEvent:
+      type: object
+      properties:
+        id: { type: string }
+        event_type: { type: string, example: PAYMENT.CAPTURE.COMPLETED }
+        resource: { type: object, additionalProperties: true }
+
+  responses:
+    Ok:
+      description: Success
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiResponse' }
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  success: { const: false }
+    Token:
+      description: JWT issued
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data:
+                    type: object
+                    properties:
+                      token: { type: [string, 'null'] }
+    Tenant:
+      description: A tenant
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data: { $ref: '#/components/schemas/Tenant' }
+    Agent:
+      description: An agent
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data: { $ref: '#/components/schemas/Agent' }
+    AgentList:
+      description: Agents
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Agent' } }
+    Rule:
+      description: A rule
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data: { $ref: '#/components/schemas/Rule' }
+    RuleList:
+      description: Rules
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Rule' } }
+    Transaction:
+      description: A transaction
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data: { $ref: '#/components/schemas/Transaction' }
+    TransactionList:
+      description: Transactions
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ApiResponse'
+              - properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Transaction' } }
