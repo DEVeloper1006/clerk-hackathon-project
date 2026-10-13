@@ -9,9 +9,11 @@ Guidelines for AI coding agents (Claude Code, Codex, Cursor, etc.) working in th
 4. Run `pnpm lint` and `pnpm test` before and after changes.
 
 ## How We Work
-- **Dev (devmody)** and one collaborator push directly to `main` for speed (hackathon).
+- **`main` is protected.** Never push directly to `main` — it will be rejected.
+- **Branch for every task:** Create `dev/<author>/<ticket-or-slug>` off `main`, push the branch, open a PR. One approval required to merge.
+- **Squash merge** into `main` after approval.
 - AI agents write `.reports/` after every session (see format below).
-- No PRs required during hackathon — commit directly to `main` with conventional commits.
+- Use conventional commits on your feature branch.
 - If you're unsure about a design decision, leave a `// TODO(agent): <question>` comment and note it in the report.
 
 ## Coding Rules
