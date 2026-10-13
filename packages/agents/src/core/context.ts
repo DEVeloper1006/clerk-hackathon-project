@@ -6,6 +6,18 @@ import { env } from '../config/env.js'
 const pool = new pg.Pool({ connectionString: env.DATABASE_URL })
 pool.on('error', (err) => console.error('[context] pool error:', err.message))
 
+/**
+ * Parameterized query against the shared pool. Callers MUST include `tenant_id = $n` in every
+ * statement — this helper can't enforce it, so review every use.
+ */
+export async function query<T extends pg.QueryResultRow>(
+  text: string,
+  params: unknown[],
+): Promise<T[]> {
+  const result = await pool.query<T>(text, params)
+  return result.rows
+}
+
 export interface TenantContext {
   tenant: Tenant | null
   agentConfig: Record<string, unknown>

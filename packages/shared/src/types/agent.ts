@@ -3,6 +3,7 @@ export enum AgentType {
   Treasury = 'treasury',
   Commerce = 'commerce',
   Growth = 'growth',
+  Infra = 'infra',
 }
 
 export const AGENT_TYPES = Object.values(AgentType)

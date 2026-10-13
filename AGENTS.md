@@ -24,13 +24,18 @@ Guidelines for AI coding agents (Claude Code, Codex, Cursor, etc.) working in th
 5. **Imports from `shared`.** Types and utils shared across packages come from `@clerk/shared` (workspace alias). Don't duplicate types.
 6. **Agent architecture.** All agents extend `BaseAgent`. Each agent has its own directory under `packages/agents/src/`. Agent-specific logic stays in that directory. Shared agent infra goes in `packages/agents/src/core/`.
 7. **Event bus.** Agents communicate through Redis pub/sub, not direct function calls. Events are typed in `packages/shared/src/types/events.ts`.
-8. **Socket.IO.** Dashboard updates go through the WebSocket server in `packages/api/src/ws/socket.ts`. Agents publish events → API server relays to connected clients.
+8. **Socket.IO.** Dashboard updates go through the WebSocket server in `packages/api/src/ws/socket.ts`. Agents publish events → API server relays to connected clients. New event types that the dashboard needs must be added to `RELAYED_EVENTS`.
+9. **Tenant path params.** Routes with `:tenantId` in the path must check that it equals `request.user.tenantId` and return 403 if it doesn't. Never trust a tenant id from the URL or body on its own.
+10. **Secrets.** Tenant secrets are encrypted at rest (`packages/api/src/utils/crypto.ts`). Never return, log, or publish a decrypted secret value.
+11. **Render.** Call the Render API only through `packages/api/src/integrations/render.ts`, and name resources with `renderResourceName()`. Resource status changes must follow the shared transition table (`canTransition` / `assertTransition` in `@clerk/shared`).
 
 ## Commit Messages
 Format: `<type>(<scope>): <description>`
 
 Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`
-Scopes: `api`, `agents`, `web`, `shared`, `infra`, `sentinel`, `treasury`, `commerce`, `growth`
+Scopes: `api`, `agents`, `web`, `shared`, `infra`, `sentinel`, `treasury`, `commerce`, `growth`, `infra-agent`
+
+(`infra` = the `infra/` folder: Blueprint, Dockerfiles, seed scripts. `infra-agent` = the Infra agent and the tenant resource provisioning layer.)
 
 Examples:
 ```

@@ -41,6 +41,12 @@ services:
         sync: false
       - key: ZAPIER_WEBHOOK_URL
         sync: false
+      - key: RENDER_API_KEY
+        sync: false
+      - key: RENDER_OWNER_ID
+        sync: false
+      - key: SECRETS_ENCRYPTION_KEY
+        sync: false
 
   - type: worker
     name: clerk-agents
@@ -68,6 +74,10 @@ services:
       - key: CHANNEL3_API_KEY
         sync: false
       - key: KERNEL_API_KEY
+        sync: false
+      - key: RENDER_API_KEY
+        sync: false
+      - key: RENDER_OWNER_ID
         sync: false
 
   - type: web

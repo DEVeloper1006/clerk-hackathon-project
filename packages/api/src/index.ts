@@ -13,6 +13,7 @@ import { agentsRoutes } from './modules/agents/agents.routes.js'
 import { rulesRoutes } from './modules/rules/rules.routes.js'
 import { transactionsRoutes } from './modules/transactions/transactions.routes.js'
 import { templatesRoutes } from './modules/templates/templates.routes.js'
+import { resourcesRoutes } from './modules/resources/resources.routes.js'
 
 const app = Fastify({
   logger: env.NODE_ENV === 'development' ? { level: 'info' } : true,
@@ -40,6 +41,7 @@ await app.register(agentsRoutes, { prefix: '/api/agents' })
 await app.register(rulesRoutes, { prefix: '/api/rules' })
 await app.register(transactionsRoutes, { prefix: '/api/transactions' })
 await app.register(templatesRoutes, { prefix: '/api/templates' })
+await app.register(resourcesRoutes, { prefix: '/api/tenants/:tenantId/resources' })
 
 await app.ready()
 const io = setupSocket(app)

@@ -24,6 +24,18 @@ const envSchema = z.object({
   CHANNEL3_API_KEY: z.string().optional(),
   KERNEL_API_KEY: z.string().optional(),
   ZAPIER_WEBHOOK_URL: z.string().url().optional().or(z.literal('')),
+
+  RENDER_API_KEY: z.string().optional(),
+  /** Render workspace (owner) id — required by Render when creating services. */
+  RENDER_OWNER_ID: z.string().optional(),
+  /** 32-byte key, base64-encoded, for AES-256-GCM encryption of tenant secrets. */
+  SECRETS_ENCRYPTION_KEY: z.preprocess(
+    (v) => (v === '' ? undefined : v),
+    z
+      .string()
+      .refine((v) => Buffer.from(v, 'base64').length === 32, 'Must be 32 bytes, base64-encoded')
+      .optional(),
+  ),
 })
 
 export type Env = z.infer<typeof envSchema>
