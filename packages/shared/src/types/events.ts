@@ -1,4 +1,5 @@
 import type { AgentType } from './agent.js'
+import type { ResourceConfig, ResourceType } from './resources.js'
 import type { Transaction } from './transaction.js'
 
 export enum EventType {
@@ -12,6 +13,14 @@ export enum EventType {
   InsightGenerated = 'insight.generated',
   AgentAction = 'agent.action',
   RuleUpdated = 'rule.updated',
+  ResourceRequested = 'resource.requested',
+  ResourceProvisioned = 'resource.provisioned',
+  ResourceFailed = 'resource.failed',
+  ResourceDestroyed = 'resource.destroyed',
+  DeploymentTriggered = 'deployment.triggered',
+  DeploymentCompleted = 'deployment.completed',
+  DeploymentFailed = 'deployment.failed',
+  ResourceCostAlert = 'resource.cost.alert',
 }
 
 export interface EventPayloads {
@@ -34,6 +43,33 @@ export interface EventPayloads {
     detail: Record<string, unknown>
   }
   [EventType.RuleUpdated]: { ruleId: string; agentType: AgentType }
+  [EventType.ResourceRequested]: {
+    resourceId: string
+    type: ResourceType
+    name: string
+    config: ResourceConfig
+  }
+  [EventType.ResourceProvisioned]: { resourceId: string; renderServiceId: string }
+  [EventType.ResourceFailed]: { resourceId: string; reason: string }
+  /** Emitted when a tenant asks to tear a resource down; the Infra agent performs the teardown. */
+  [EventType.ResourceDestroyed]: { resourceId: string; renderServiceId: string | null }
+  [EventType.DeploymentTriggered]: {
+    deploymentId: string
+    resourceId: string
+    commitHash: string | null
+  }
+  [EventType.DeploymentCompleted]: {
+    deploymentId: string
+    resourceId: string
+    renderDeployId: string
+  }
+  [EventType.DeploymentFailed]: { deploymentId: string; resourceId: string; reason: string }
+  [EventType.ResourceCostAlert]: {
+    monthlyCostCents: number
+    thresholdCents: number
+    projectedBalance: number
+    currency: string
+  }
 }
 
 export interface ClerkEventEnvelope<T extends EventType = EventType> {

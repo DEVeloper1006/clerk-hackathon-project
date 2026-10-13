@@ -17,6 +17,10 @@ const envSchema = z.object({
   CHANNEL3_API_KEY: z.string().optional(),
   KERNEL_API_KEY: z.string().optional(),
 
+  RENDER_API_KEY: z.string().optional(),
+  /** Render workspace (owner) id — required by Render when creating services. */
+  RENDER_OWNER_ID: z.string().optional(),
+
   /** Comma-separated subset of agents to run in this process (e.g. "sentinel"). Empty = all. */
   AGENTS: z.string().optional(),
 })

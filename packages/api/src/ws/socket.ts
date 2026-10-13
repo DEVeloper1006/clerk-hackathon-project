@@ -14,6 +14,15 @@ const RELAYED_EVENTS: EventType[] = [
   EventType.TransactionScored,
   EventType.ForecastUpdated,
   EventType.InsightGenerated,
+  // Infra
+  EventType.ResourceRequested,
+  EventType.ResourceProvisioned,
+  EventType.ResourceFailed,
+  EventType.ResourceDestroyed,
+  EventType.DeploymentTriggered,
+  EventType.DeploymentCompleted,
+  EventType.DeploymentFailed,
+  EventType.ResourceCostAlert,
 ]
 
 export function setupSocket(app: FastifyInstance): Server {

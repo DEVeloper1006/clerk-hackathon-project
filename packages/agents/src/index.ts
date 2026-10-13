@@ -5,6 +5,7 @@ import { bus } from './core/bus.js'
 import { closeContextPool } from './core/context.js'
 import { CommerceAgent } from './commerce/index.js'
 import { GrowthAgent } from './growth/index.js'
+import { InfraAgent } from './infra/index.js'
 import { SentinelAgent } from './sentinel/index.js'
 import { TreasuryAgent } from './treasury/index.js'
 
@@ -13,9 +14,10 @@ const factories: Record<AgentType, () => BaseAgent> = {
   [AgentType.Treasury]: () => new TreasuryAgent(),
   [AgentType.Commerce]: () => new CommerceAgent(),
   [AgentType.Growth]: () => new GrowthAgent(),
+  [AgentType.Infra]: () => new InfraAgent(),
 }
 
-// AGENTS="sentinel,growth" runs a subset (one pod per agent on Astropods); empty runs all four.
+// AGENTS="sentinel,growth" runs a subset (one pod per agent on Astropods); empty runs all of them.
 const selected = env.AGENTS
   ? env.AGENTS.split(',')
       .map((s) => s.trim())
