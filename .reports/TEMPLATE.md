@@ -1,25 +1,26 @@
-# Report: <slug>
+# Session Report: <slug>
 **Date:** YYYY-MM-DD HH:MM
-**Author:** <devmody | collaborator-name | agent>
-**Session goal:** <One line — what you set out to do.>
+**Author:** <name> (<agent: Claude Code | Codex | manual>)
+**Branch:** dev/<author>/<slug>
 
-## What changed
-- `path/to/file.ts` (created | modified | deleted):
-  - <What changed and why, in bullet points.>
-  - *Why:* <Reason for the change.>
+## Goal
+What you set out to do this session.
+
+## What Changed
+- `path/to/file.ts` — what was added/changed and why
+- `path/to/other.ts` — what was added/changed and why
 
 ## Current State
-- **Build:** SUCCEEDED | FAILED (with error)
-- **Tests:** X passing, Y failing (or "no tests yet")
-- **Runnable:** Yes / No / Partially — <what works, what doesn't>
-- <Any other relevant status — broken deps, missing env vars, etc.>
+- Does it build? Yes/No
+- Does it run? Yes/No
+- What works end-to-end?
+- What's broken or incomplete?
+
+## Blockers
+Anything that prevented progress or needs a decision from the other contributor.
 
 ## Next Steps
-1. <Concrete next task.>
-2. <Another one.>
-3. <Optional third.>
+What the next session should pick up. Be specific — file names, function names, what needs to happen.
 
 ## Suggested Commit Message
-```
-<type>(<scope>): <description>
-```
+feat(scope): description
