@@ -1,0 +1,19 @@
+{
+  "name": "@clerk/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@clerk/shared": "workspace:*",
+    "drizzle-orm": "^0.45.4",
+    "fastify": "^5.12.7",
+    "ioredis": "^6.0.0",
+    "socket.io": "^4.8.4"
+  }
+}

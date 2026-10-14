@@ -29,4 +29,13 @@ coverage
 *.swo
 
 # Local Claude Code config (personal workflow, not for the repo)
-CLAUDE.local.md
+CLAUDE.md
+AGENTS.md
+
+# Build output (extra)
+build
+
+# Tool caches
+.render/
+.ast/
+.agent-cache/
